@@ -12,6 +12,12 @@ evaluating the assistant.
 | Path | Purpose |
 | ---- | ------- |
 | [`evals/`](./evals) | Work Assist quality-evaluation package: Agent Studio test sets (WA-01…WA-08), Evals API discovery/smoke runner, run log, and remediation notes. Mirrored from [work-assist-evals](https://github.com/yashpamulapati-max/work-assist-evals). |
+| [`docs/`](./docs) | Integration reference ([TRIMBLE-AGENTIC-AI-SETUP](./docs/TRIMBLE-AGENTIC-AI-SETUP.md)) and [session notes](./docs/session-notes). |
+| [`ops/`](./ops) | Recovery runbook ([ams-ok-sso-pod-restart](./ops/ams-ok-sso-pod-restart.md)) and a **redacted** `web.xml` reference for `ams-ok-yp2`. |
+
+## Partners
+
+Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshields-trimble)).
 
 ## What is Work Assist?
 

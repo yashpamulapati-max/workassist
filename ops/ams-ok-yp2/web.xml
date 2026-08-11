@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <icon/>
+  <display-name>AGILE_STANDARD - 9.2.0-RELEASE</display-name>
+  <description>AgileAssets Management System Web</description>
+  <context-param>
+    <param-name>customer_project_id</param-name>
+    <param-value>AMS_OK</param-value>
+  </context-param>
+  <context-param>
+    <param-name>dev_mode</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>run_system_jobs</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <!-- JNDI datasource declared in the application server to be used by the application (ex. : jdbc/amsTest). If not available or parameter is empty, the application will create its own datasource -->
+  <context-param>
+    <param-name>JDBCdataSource</param-name>
+    <param-value>sysdbconAMS_OK</param-value>
+  </context-param>
+  <!-- JDBC url to the database used to create the application's datasource.
+           ex. for Oracle Service: jdbc:oracle:thin:@//HOST:1521/service
+           ex. for Oracle SID: jdbc:oracle:thin:@HOST:1521:sid
+           ex. for postgres: jdbc:postgresql://HOST:5432/database
+    -->
+  <context-param>
+    <param-name>JDBCurl</param-name>
+    <param-value>jdbc:oracle:thin:@//10.213.38.93:1521/AMS_OK_YP</param-value>
+  </context-param>
+  <!-- schema user -->
+  <context-param>
+    <param-name>JDBCUser</param-name>
+    <param-value>AMS_OK</param-value>
+  </context-param>
+  <!-- schema user password -->
+  <context-param>
+    <param-name>JDBCPassword</param-name>
+    <param-value>AMS_OK</param-value>
+  </context-param>
+  <!-- Encrypted schema user -->
+  <context-param>
+    <param-name>JDBCencUser</param-name>
+    <param-value/>
+  </context-param>
+  <!-- Encrypted schema user password -->
+  <context-param>
+    <param-name>JDBCencPassword</param-name>
+    <param-value/>
+  </context-param>
+  <!-- This property controls the minimum number of idle connections that HikariCP tries to maintain in the pool.
+    If the idle connections dip below this value and total connections in the pool are less than maximumPoolSize, HikariCP will make a best effort to add additional connections quickly and efficiently.
+    However, for maximum performance and responsiveness to spike demands, we recommend not setting this value and instead allowing HikariCP to act as a fixed size connection pool. -->
+  <context-param>
+    <param-name>JDBCminActive</param-name>
+    <param-value>15</param-value>
+  </context-param>
+  <!-- This property controls the maximum size that the pool is allowed to reach, including both idle and in-use connections. Basically this value will determine the maximum number of actual connections to the database backend.
+    A reasonable value for this is best determined by your execution environment.
+    When the pool reaches this size, and no idle connections are available, calls to getConnection() will block for up to connectionTimeout milliseconds before timing out. -->
+  <context-param>
+    <param-name>JDBCmaxActive</param-name>
+    <param-value>20</param-value>
+  </context-param>
+  <!-- This property controls the maximum lifetime of a connection in the pool. An in-use connection will never be retired, only when it is closed will it then be removed.
+    We strongly recommend setting this value, and it should be at least 30 seconds less than any database or infrastructure imposed connection time limit.
+    A value of 0 indicates no maximum lifetime (infinite lifetime), subject of course to the idleTimeout setting. Default: 1800000 (30 minutes) -->
+  <context-param>
+    <param-name>JDBCmaxLifeTime</param-name>
+    <param-value>1800000</param-value>
+  </context-param>
+  <!-- Maximum attempts the application will do when trying to obtain the database connection at start-up -->
+  <context-param>
+    <param-name>JDBCmaxConnectionAttempt</param-name>
+    <param-value>50</param-value>
+  </context-param>
+  <!-- This property controls the maximum number of milliseconds that a client (that's you) will wait for a connection from the pool.
+    If this time is exceeded without a connection becoming available, a SQLException will be thrown. Lowest acceptable connection timeout is 250 ms.
+    Default: 30000 (30 seconds) -->
+  <context-param>
+    <param-name>JDBCConnectionTimeOut</param-name>
+    <param-value>30000</param-value>
+  </context-param>
+  <!-- This property controls the amount of time that a connection can be out of the pool before a message is
+     logged indicating a possible connection leak. A value of 0 means leak detection is disabled.
+    Default: 0 - Never -->
+  <context-param>
+    <param-name>JDBCleakDetectionThreshold</param-name>
+    <param-value>0</param-value>
+  </context-param>
+  <!-- NGM Feature Query Parameters -->
+  <context-param>
+    <param-name>ngmQueryCoreThreads</param-name>
+    <param-value>20</param-value>
+  </context-param>
+  <context-param>
+    <param-name>ngmQueryMaxThreads</param-name>
+    <param-value>50</param-value>
+  </context-param>
+  <context-param>
+    <param-name>ngmQueryQueue</param-name>
+    <param-value>100</param-value>
+  </context-param>
+  <context-param>
+    <param-name>ngmQueryMaxFeatures</param-name>
+    <param-value>10000</param-value>
+  </context-param>
+  <context-param>
+    <param-name>loadbalanced</param-name>
+    <param-value>${aa.loadBalanced}</param-value>
+  </context-param>
+  <!-- URL user will be redirected to when setup different from /Kernel/w_login.jsp.
+         This is used to redirect automatically the user to a portal, for example, when he logout from the application.
+         The user will be also redirected to this page when trying to access the login jsp directly.   -->
+  <context-param>
+    <param-name>timeout_page</param-name>
+    <param-value>/Kernel/w_login.jsp</param-value>
+  </context-param>
+  <!-- always_ssl: if true will only accept https requests -->
+  <!--
+    <context-param>
+        <param-name>always_ssl</param-name>
+        <param-value>false</param-value>
+    </context-param>
+     -->
+  <!--
+    <context-param>
+        <param-name>gps_com_port</param-name>
+        <param-value>COM1</param-value>
+    </context-param>
+    <context-param>
+        <param-name>gps_type</param-name>
+        <param-value>NMEA</param-value>
+    </context-param>
+    <context-param>
+        <param-name>gps_measure_unit</param-name>
+        <param-value>KM</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>gps_min_distance</param-name>
+        <param-value>0.0</param-value>
+    </context-param>
+    -->
+  <!-- fetch_size: Gives the JDBC driver a hint as to the number of rows that should be fetched from the database when more rows are needed for a ResultSet. -->
+  <!--
+    <context-param>
+        <param-name>fetch_size</param-name>
+        <param-value>100</param-value>
+    </context-param>
+    -->
+  <!-- high_fetch_size: Same as fetch_size, but only used in large datasets with Geometry (as of now, only in maps) -->
+  <!--
+    <context-param>
+        <param-name>high_fetch_size</param-name>
+        <param-value>5000</param-value>
+    </context-param>
+    -->
+  <!--
+    <context-param>
+        <param-name>bridge_inspec_pics_root</param-name>
+        <param-value></param-value>
+    </context-param>
+    -->
+  <context-param>
+    <param-name>reCaptchaEnabled</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>reCaptchaPrivateKey</param-name>
+    <param-value>6Lf8PAoTAAAAAFGk4_b4eHXgdBI3r9iy3fXrz3Rt</param-value>
+  </context-param>
+  <context-param>
+    <param-name>reCaptchaPublicKey</param-name>
+    <param-value>6Lf8PAoTAAAAAK6R_Q-Sm94sRd1vPs5kKJor88xN</param-value>
+  </context-param>
+  <!--  LRS Import processing chunk size -->
+  <context-param>
+    <param-name>lrs_chunk_size</param-name>
+    <param-value>250000</param-value>
+  </context-param>
+  <!-- Cache replication parameters -->
+  <!-- Note that this is hard coded to false as it makes no sense to set all these parameters in a single war file -->
+  <!-- other items cacheReplicationListenerPort, cacheReplicationProviderMulticastAddress, cacheReplicationProviderMulticastPort -->
+  <context-param>
+    <param-name>cacheReplicationEnabled</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>cacheReplicationListenerPort</param-name>
+    <param-value>40001</param-value>
+  </context-param>
+  <context-param>
+    <param-name>cacheReplicationProviderMulticastAddress</param-name>
+    <param-value>230.0.0.1</param-value>
+  </context-param>
+  <context-param>
+    <param-name>cacheReplicationProviderMulticastPort</param-name>
+    <param-value>4446</param-value>
+  </context-param>
+  <!--
+          timeToLive =
+              By convention:
+            0 is restricted to the same host
+            1 is restricted to the same subnet
+           32 is restricted to the same site
+           64 is restricted to the same region
+          128 is restricted to the same continent
+          255 is unrestricted
+    -->
+  <context-param>
+    <param-name>cacheReplicationTimeToLive</param-name>
+    <param-value>1</param-value>
+  </context-param>
+  <context-param>
+    <param-name>gis_number_dedicated_connections</param-name>
+    <param-value>32</param-value>
+  </context-param>
+  <context-param>
+    <param-name>max_rows</param-name>
+    <param-value>10000</param-value>
+  </context-param>
+  <!-- System Maintenance Jobs -->
+  <!--a list of jobs and cron expressions (second, minute, hour, day, month, weekday) for example:-->
+  <!--<param-value>-->
+  <!--com.agileassetsinc.job.CleanTmpFolderJob:*/30 * * 1/1 * ?-->
+  <!--com.agileassetsinc.job.CleanTmpFolderJob:0 0/5 * 1/1 * ?-->
+  <!--</param-value>-->
+  <context-param>
+    <param-name>systemMaintenanceJobsList</param-name>
+    <param-value>
+            com.agileassetsinc.job.CleanTmpFolderJob:0 0 0 1/1 * ?
+        </param-value>
+  </context-param>
+  <!-- End of System Maintenance Jobs -->
+  <!--this should be setup by client only if they need it-->
+  <!--
+    <filter>
+        <filter-name>OpenAccessFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.OpenAccessFilter</filter-class>
+    </filter>
+    -->
+  <context-param>
+    <param-name>ams_reporting_server_url</param-name>
+    <param-value>http://localhost:8082/ams-reporting/rest/v1</param-value>
+  </context-param>
+  <context-param>
+    <param-name>ams_configurer_server_url</param-name>
+    <param-value>http://localhost:8083/rest/v1</param-value>
+  </context-param>
+  <context-param>
+    <param-name>ams_api_gateway_url</param-name>
+    <param-value/>
+  </context-param>
+  <context-param>
+    <param-name>ff4j_console_enabled</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <filter>
+    <filter-name>Compress</filter-name>
+    <filter-class>com.agileassetsinc.core.GZIPFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>SecurityFilter</filter-name>
+    <filter-class>com.agileassetsinc.core.SecurityFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>ObsoleteWindowFilter</filter-name>
+    <filter-class>com.agileassetsinc.core.ObsoleteWindowFilter</filter-class>
+  </filter>
+  <!-- We support two strategies of signature for now (SIGNATURE_STRATEGY).
+         MESSAGE_SIGNATURE - a whole SAMLResponse is signed
+         ASSERTION_SIGNATURE - an assertion is only signed. -->
+  <!--
+    <filter>
+        <filter-name>SamlFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.SsoSAMLFilter</filter-class>
+        <init-param>
+            <param-name>SIGNATURE_STRATEGY</param-name>
+            <param-value>${aa.samlSignatureStrategy}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>IDP_URL_Overide</param-name>
+            <param-value></param-value>
+        </init-param>
+        <init-param>
+           <param-name>ERROR_URL</param-name>
+           <param-value></param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+       <filter-name>SamlFilter</filter-name>
+       <url-pattern>/alias/sp</url-pattern>
+    </filter-mapping>
+    -->
+  <!-- We support two strategies of signature for now (SIGNATURE_STRATEGY).
+         MESSAGE_SIGNATURE - a whole SAMLResponse is signed
+         ASSERTION_SIGNATURE - an assertion is only signed. -->
+  <!--
+    <filter>
+        <filter-name>SsoSAMLOpenAccessFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.SsoSAMLOpenAccessFilter</filter-class>
+        <init-param>
+            <param-name>SIGNATURE_STRATEGY</param-name>
+            <param-value>${aa.samlSignatureStrategy}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>IDP_URL_Overide</param-name>
+            <param-value></param-value>
+        </init-param>
+        <init-param>
+           <param-name>ERROR_URL</param-name>
+           <param-value></param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+       <filter-name>SsoSAMLOpenAccessFilter</filter-name>
+       <url-pattern>/general_access/*</url-pattern>
+    </filter-mapping>
+    -->
+  <!-- JAAS Single Sign-On configuration (set "debug" to false in production) -->
+  <!--
+    <filter>
+        <filter-name>SsoFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.SsoFilter</filter-class>
+
+        <init-param>
+            <param-name>realm</param-name>
+            <param-value>AGILEASSETS.COM</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>kdc</param-name>
+            <param-value>AGILEASSETS.COM</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>password</param-name>
+            <param-value>@aaEncrypted@__REDACTED__</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>SsoFilter</filter-name>
+        <url-pattern>/Kernel/w_sso.jsp</url-pattern>
+    </filter-mapping>
+    -->
+  <!--
+    <filter>
+        <filter-name>ResponseHeaderFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.ResponseHeaderFilter</filter-class>
+        <init-param>
+            <param-name>Cache-Control</param-name>
+            <param-value>max-age=86400</param-value>
+        </init-param>
+    </filter>
+    -->
+  <!--this should be setup by client only if they need it-->
+  <!--
+    <filter-mapping>
+        <filter-name>OpenAccessFilter</filter-name>
+        <url-pattern>/general_access/*</url-pattern>
+    </filter-mapping>
+    -->
+  <!-- Parameters can be found by looking at the OpenId provider configuration.
+         Endpoints can be found by looking at .well-known/openid-configuration.
+         Use ams-encrypter to encrypt the client secret.
+         Most parameters are endpoints for OpenId provider. The following are not:
+          - openIdOauthRedirectUrl - Should be the /sso servlet. This is what the OpenId provider
+                redirects the user to after login. This must be registered with the OpenId provider.
+                defaults to the context sso servlet path if not provided.
+          - openIdOauthPostLogoutRedirectUri - The uri that the user is directed to after logout.
+                This could be an external site like a client dashboard. This must be registered with
+                the OpenId provider.
+                defaults to system timeout_page if not provided.
+         -->
+  <!--this should be setup by client only if they need it-->
+  <!--
+    <servlet>
+        <servlet-name>SsoServlet</servlet-name>
+        <servlet-class>com.agileassetsinc.core.servlet.SsoServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SsoServlet</servlet-name>
+        <url-pattern>/sso</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>OpenIdSSOFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.OpenidSsoFilter</filter-class>
+        <init-param>
+            <param-name>openIdBaseUrl</param-name>
+            <param-value>https://id.trimble.com</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdScope</param-name>
+            <param-value>AMS_TID_PROD</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdClientId</param-name>
+            <param-value>adbcfb54-acba-4da6-83d9-b1c1259dca86</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdClientSecretEncrypted</param-name>
+            <param-value>@aaEncrypted@__REDACTED__</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdOauthAuthorizationEndpoint</param-name>
+            <param-value>/oauth/authorize</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdOauthTokenEndpoint</param-name>
+            <param-value>/oauth/token</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdOauthUserinfoEndpoint</param-name>
+            <param-value>/oauth/userinfo</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdOauthEndSessionEndpoint</param-name>
+            <param-value>/oauth/logout</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdOauthRedirectUrl</param-name>
+            <param-value>/sso</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>openIdOauthPostLogoutRedirectUri</param-name>
+            <param-value>/sso</param-value>
+        </init-param>
+
+    </filter>
+
+    <filter-mapping>
+        <filter-name>OpenIdSSOFilter</filter-name>
+        <url-pattern>/sso</url-pattern>
+    </filter-mapping>
+-->
+<servlet>
+        <servlet-name>SsoServlet</servlet-name>
+        <servlet-class>com.agileassetsinc.core.servlet.SsoServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SsoServlet</servlet-name>
+        <url-pattern>/sso</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>TrimbleIdentitySsoFilter</filter-name>
+        <filter-class>com.agileassetsinc.core.TrimbleIdentitySsoFilter</filter-class>
+        <init-param>
+            <param-name>environment</param-name>
+            <param-value>stage</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cdhAccountId</param-name>
+            <param-value>1722613969858580</param-value>
+        </init-param>
+        <init-param>
+            <param-name>openIdScope</param-name>
+            <!-- "agents" scope is required for the embedded Work Assist agent to authorize against the Agent Service -->
+            <param-value>OPS_prompt-patrol-env-2 agents</param-value>
+        </init-param>
+        <init-param>
+            <param-name>openIdClientId</param-name>
+            <param-value>f69f789f-d964-430b-8bfe-2ba03251fd3d</param-value>
+        </init-param>
+        <init-param>
+            <param-name>openIdClientSecretEncrypted</param-name>
+            <param-value>@aaEncrypted@__REDACTED__</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>TrimbleIdentitySsoFilter</filter-name>
+        <url-pattern>/sso</url-pattern>
+    </filter-mapping>
+
+  <!--post requests must have a valid content type header, for example:-->
+  <!--Content-Type:application/x-www-form-urlencoded-->
+  <!--Content-Type:application/json-->
+  <!--Content-Type:multipart/form-data-->
+  <!--Content-Type:text/plain-->
+  <filter>
+    <filter-name>CorsFilter</filter-name>
+    <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+    <async-supported>true</async-supported>
+    <init-param>
+      <param-name>cors.allowed.origins</param-name>
+      <param-value>*</param-value>
+    </init-param>
+    <init-param>
+      <param-name>cors.allowed.methods</param-name>
+      <param-value>GET,POST,HEAD,OPTIONS,PUT,DELETE</param-value>
+    </init-param>
+    <init-param>
+      <param-name>cors.allowed.headers</param-name>
+      <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,aa_sid,authorization</param-value>
+    </init-param>
+    <init-param>
+      <param-name>cors.exposed.headers</param-name>
+      <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+    </init-param>
+    <!--
+               This has to be removed otherwise we get an error on startup:
+                  It is not allowed to configure supportsCredentials=[true] when allowedOrigins=[*]
+                This is by design see https://bz.apache.org/bugzilla/show_bug.cgi?id=62343
+        <init-param>
+            <param-name>cors.support.credentials</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        -->
+    <init-param>
+      <param-name>cors.preflight.maxage</param-name>
+      <param-value>10</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CorsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- CRSF Filter -->
+  <filter>
+    <filter-name>CSRFPreventionFilter</filter-name>
+    <filter-class>com.agileassetsinc.core.AACsrfPreventionFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CSRFPreventionFilter</filter-name>
+    <url-pattern>/ControllerServlet</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CSRFPreventionFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>Compress</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>Compress</filter-name>
+    <url-pattern>*.html</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>Compress</filter-name>
+    <url-pattern>*.css</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>Compress</filter-name>
+    <url-pattern>*.js</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>Compress</filter-name>
+    <url-pattern>*.xsl</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>SecurityFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ObsoleteWindowFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+  <listener>
+    <listener-class>com.agileassetsinc.core.TRDIContextListener</listener-class>
+  </listener>
+  <!-- listener used to register/unregister Imageio plugins -->
+  <listener>
+    <display-name>ImageIO service provider loader/unloader</display-name>
+    <listener-class>com.twelvemonkeys.servlet.image.IIOProviderContextListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.agileassetsinc.core.healthcheck.AmsWebMetricsServletContextListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.agileassetsinc.core.healthcheck.AmsWebHealthCheckServletContextListener</listener-class>
+  </listener>
+  <!-- Web API Services -->
+  <servlet>
+    <servlet-name>com.agileassetsinc.service.rest.WebApiConfig</servlet-name>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.agileassetsinc.service.rest.WebApiConfig</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.agileassets.security.enabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </servlet>
+  <!-- Web API v2 Services -->
+  <servlet>
+    <servlet-name>com.agileassetsinc.service.rest.WebApiConfigV2</servlet-name>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.agileassetsinc.service.rest.WebApiConfigV2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.agileassets.security.enabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.scanner.id</param-name>
+      <param-value>restV2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.context.id</param-name>
+      <param-value>restV2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.config.id</param-name>
+      <param-value>restV2</param-value>
+    </init-param>
+  </servlet>
+  <!-- Web API SCIM Services -->
+  <servlet>
+    <servlet-name>com.agileassetsinc.service.rest.WebApiConfigScim</servlet-name>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.agileassetsinc.service.rest.WebApiConfigScim</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.agileassets.security.enabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.scanner.id</param-name>
+      <param-value>scim</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.context.id</param-name>
+      <param-value>scim</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.config.id</param-name>
+      <param-value>scim</param-value>
+    </init-param>
+  </servlet>
+  <!-- Map Services -->
+  <servlet>
+    <servlet-name>com.agileassetsinc.gis.ngm.rest.MapApiConfig</servlet-name>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.agileassetsinc.gis.ngm.rest.MapApiConfig</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.agileassets.security.enabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <async-supported>true</async-supported>
+  </servlet>
+  <servlet>
+    <servlet-name>ControllerServlet</servlet-name>
+    <servlet-class>com.agileassetsinc.core.servlet.ControllerServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!-- FF4J Console, this is disabled in the code itself.  There's a minor overhead in leaving it here, very minor, but having it
+         here means it's a lot easier to enable when (or if) the time comes -->
+  <servlet>
+    <servlet-name>ff4j-console</servlet-name>
+    <servlet-class>com.agileassetsinc.core.feature.AAConsoleServlet</servlet-class>
+    <init-param>
+      <param-name>ff4jProvider</param-name>
+      <param-value>com.agileassetsinc.core.feature.AAFeatureProvider</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ff4jUsageLoggingEnabled</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <!--  Custom CSS for the console - URL to file
+        <init-param>
+            <param-name>customCSS</param-name>
+            <param-value>/customCSS.css</param-value>
+        </init-param>
+        -->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>metrics</servlet-name>
+    <servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>metrics</servlet-name>
+    <url-pattern>/metrics/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ff4j-console</servlet-name>
+    <url-pattern>/ff4j-console/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ControllerServlet</servlet-name>
+    <url-pattern>/ControllerServlet</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <!-- timeout in minutes, system takes the lesser of this and what's in system_adm -->
+    <session-timeout>30</session-timeout>
+    <cookie-config>
+      <http-only>true</http-only>
+      <secure>true</secure>
+    </cookie-config>
+    <!-- remove jsessionid path fragment: https://stackoverflow.com/a/17349754 -->
+    <tracking-mode>COOKIE</tracking-mode>
+  </session-config>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/Kernel/w_error.jsp</location>
+  </error-page>
+  <servlet>
+    <servlet-name>SwaggerSCIM</servlet-name>
+    <servlet-class>com.agileassetsinc.core.servlet.SwaggerServlet</servlet-class>
+    <init-param>
+      <param-name>packages</param-name>
+      <param-value>com.agileassetsinc.service.rest.scim</param-value>
+    </init-param>
+    <init-param>
+      <param-name>version</param-name>
+      <param-value>v2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>url</param-name>
+      <param-value>../../rest/scim</param-value>
+    </init-param>
+    <init-param>
+      <param-name>descriptionFile</param-name>
+      <param-value>scim_description</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SwaggerSCIM</servlet-name>
+    <url-pattern>/openapi/scim/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>SwaggerV2</servlet-name>
+    <servlet-class>com.agileassetsinc.core.servlet.SwaggerServlet</servlet-class>
+    <init-param>
+      <param-name>packages</param-name>
+      <param-value>com.agileassetsinc.service.rest.v2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>version</param-name>
+      <param-value>v2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>url</param-name>
+      <param-value>../../rest/v2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>descriptionFile</param-name>
+      <param-value>v2_description</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SwaggerV2</servlet-name>
+    <url-pattern>/openapi/v2/*</url-pattern>
+  </servlet-mapping>
+</web-app>
