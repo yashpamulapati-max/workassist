@@ -60,7 +60,7 @@ recovery runbook.
 - Created private repo `yashpamulapati-max/workassist` with `main` + `develop`.
 - `evals/` — snapshot of [work-assist-evals](https://github.com/yashpamulapati-max/work-assist-evals)
   (test sets WA-01…WA-08 + Evals API runner).
-- `ops/` + `docs/` — recovery runbook, redacted `web.xml` reference, and the setup guide.
+- `ops/` + `docs/` — recovery runbook, runnable `web.xml` for `ams-ok-yp2`, and the setup guide.
 - Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshields-trimble)),
   added as a collaborator.
 

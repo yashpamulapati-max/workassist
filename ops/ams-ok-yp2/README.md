@@ -1,11 +1,10 @@
 # ams-ok-yp2 ops
 
-> **Shared reference copy.** The `web.xml` here has all `@aaEncrypted@…` secret values **redacted**
-> (`@aaEncrypted@__REDACTED__`). It documents the structure and the required `agents` scope, but is
-> **not runnable as-is**. The real, runnable copy lives in the internal AgileAssets repo at
-> `ops/ams-ok-yp2/web.xml`. Use that one for actual pod recovery.
+> **Runnable copy — keep this repo private.** The `web.xml` here is the real, resolved config
+> (including `@aaEncrypted@…` AgileAssets-encrypted values, not plaintext secrets) and can be pushed
+> to the pod as-is for recovery. It is kept here so partners can run the recovery directly.
 
-Config reference for recovering the AgileAssets `ams-web` app on the `ams-ok-yp2` environment.
+Config for recovering the AgileAssets `ams-web` app on the `ams-ok-yp2` environment.
 
 ## `web.xml`
 

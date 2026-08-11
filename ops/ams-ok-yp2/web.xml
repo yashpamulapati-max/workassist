@@ -344,7 +344,7 @@
 
         <init-param>
             <param-name>password</param-name>
-            <param-value>@aaEncrypted@__REDACTED__</param-value>
+            <param-value>@aaEncrypted@v3dx4crEFX0bXbu4ODu6lQ==</param-value>
         </init-param>
     </filter>
 
@@ -415,7 +415,7 @@
 
         <init-param>
             <param-name>openIdClientSecretEncrypted</param-name>
-            <param-value>@aaEncrypted@__REDACTED__</param-value>
+            <param-value>@aaEncrypted@pJN2E5ile2av8Nu4r1mUh034lkbtak2qDZlTu5kjG9vjS5uHCM1/QCG6aCR+r7C/</param-value>
         </init-param>
 
         <init-param>
@@ -488,7 +488,7 @@
         </init-param>
         <init-param>
             <param-name>openIdClientSecretEncrypted</param-name>
-            <param-value>@aaEncrypted@__REDACTED__</param-value>
+            <param-value>@aaEncrypted@GyMa0jEgZBKtVbxXB0XPYjan37hh4N767ZpQQ8TB/4jjS5uHCM1/QCG6aCR+r7C/</param-value>
         </init-param>
     </filter>
 
