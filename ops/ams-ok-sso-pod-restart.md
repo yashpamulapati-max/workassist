@@ -1,6 +1,6 @@
 ---
 name: ams-ok-sso-pod-restart
-description: Recover the AgileAssets ams-web app when it is down on the ams-ok-yp2 (or similar ams-ok-*) environment by restarting/reloading the SSO-enabled Tomcat pod and re-pushing the patched web.xml. Use when the app is down, returns a blank page, SSO/login fails, the Work Assist agent stops loading, or after a pod has been recreated and the agents scope / TID scope reverted.
+description: Recover the AgileAssets ams-web app when it is down on the ams-ok-yp2 (or similar ams-ok-*) environment by restarting/reloading the SSO-enabled Tomcat pod, re-pushing the patched web.xml, and re-pushing the ephemeral Work Assist embed files (trimble-assist.js/css, trimble-sdk.js, w_main.jsp). Use when the app is down, returns a blank page, SSO/login fails, the Work Assist agent stops loading, the Work Assist chat FAB/panel is missing, or after a pod has been recreated and the agents scope / TID scope / embed files reverted.
 ---
 
 # ams-ok SSO Pod Restart & Recovery
@@ -12,7 +12,8 @@ Recovery runbook for the AgileAssets `ams-web` app on the `ams-ok-yp2` environme
 - The app is down / blank / 5xx (e.g. `https://ams-ok-yp2-web.app.np.agileassets.net/ams-web/`).
 - SSO login fails or `w_sso_user.jsp` errors.
 - The embedded **Work Assist** agent stops loading with "Failed to load agent".
-- A pod was recreated (deploy, node recycle, `kubectl delete pod`) and reverted the **hand-patched `web.xml`** (resolved `openIdScope` including the `agents` scope).
+- The Work Assist **chat FAB / panel is missing** (bottom-right button gone) — the embed files reverted.
+- A pod was recreated (deploy, node recycle, `kubectl delete pod`) and reverted the **hand-patched `web.xml`** (resolved `openIdScope` including the `agents` scope) and/or the **embed files**.
 
 ## CRITICAL context — why we re-push web.xml
 
@@ -21,6 +22,24 @@ The `agents` scope was added to `web.xml` **by hand inside the running pod** (an
 - The **only valid push source** is your locally-saved, already-resolved `web.xml` (the one containing the real scope value, e.g. `OPS_prompt-patrol-env-2 agents`).
 - Whenever Kubernetes recreates the pod, the container filesystem resets to the image and the edit is **lost** — that is why recovery re-`cp`s the saved `web.xml` back in.
 - Permanent fix (removes the need for this runbook): bake `agents` into the Helm/configmap value behind `${aa.tidScope}` for `ams-ok-yp2`, then this manual push is no longer required.
+
+## CRITICAL context — the Work Assist embed files are ALSO ephemeral
+
+The floating chat FAB/panel is injected by `Kernel/w_main.jsp` and depends on three static files, all
+deployed by hand via `kubectl cp` (never in the image). On pod recreation they vanish and the FAB
+disappears — the same failure mode as the `web.xml` scope. You must re-push them too.
+
+Push source = the repo working copy under
+`ams-web/src/main/webapp/Kernel/`:
+
+| File | Purpose |
+| ---- | ------- |
+| `trimble-sdk.js` | Bundled Trimble Agentic iframe SDK (`window.TrimbleAgenticSDK`) — must load first |
+| `trimble-assist.js` | Embed logic: iframe, local tools, onBeforeRun/token via SDK |
+| `trimble-assist.css` | FAB + panel styles |
+| `w_main.jsp` | Shell page that injects the CSS + both scripts (defer, order preserved) |
+
+Permanent fix: bundle these into the ams-web build/image so they survive recreation.
 
 ## Prerequisites
 
@@ -80,6 +99,24 @@ kubectl -n ams-ok-yp2 cp web.xml <NEW-POD-NAME>:/usr/local/tomcat/webapps/ams-we
 
 Copying (or `touch`-ing) `web.xml` triggers Tomcat to auto-reload the `/ams-web` context and re-read the init-params — no container restart needed.
 
+### 4b. Re-push the Work Assist embed files (if the chat FAB is missing)
+
+If the chat FAB/panel is gone (or after any pod recreation), the embed files were lost too. Re-push all
+four from the repo `Kernel` dir, then trigger one reload. Check first:
+
+```bash
+kubectl exec -n ams-ok-yp2 <NEW-POD-NAME> -- ls /usr/local/tomcat/webapps/ams-web/Kernel/trimble-assist.js
+# "No such file" ⇒ re-push:
+cd ~/agileassetsweb-project/ams-web/src/main/webapp/Kernel
+K=/usr/local/tomcat/webapps/ams-web/Kernel
+kubectl -n ams-ok-yp2 cp trimble-sdk.js     <NEW-POD-NAME>:$K/trimble-sdk.js
+kubectl -n ams-ok-yp2 cp trimble-assist.js  <NEW-POD-NAME>:$K/trimble-assist.js
+kubectl -n ams-ok-yp2 cp trimble-assist.css <NEW-POD-NAME>:$K/trimble-assist.css
+kubectl -n ams-ok-yp2 cp w_main.jsp         <NEW-POD-NAME>:$K/w_main.jsp
+# reload once so the new w_main.jsp recompiles:
+kubectl exec -n ams-ok-yp2 <NEW-POD-NAME> -- touch /usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
+```
+
 ### 5. Verify the reload
 
 Check the last 20 lines for `Reloading Context with name [/ams-web] is completed`:
@@ -100,6 +137,7 @@ kubectl logs -n ams-ok-yp2 <NEW-POD-NAME> | tail -n 20
 
 - **DO** reload by `cp`/`touch` of `web.xml` — it preserves the running container and re-reads config.
 - **DO** re-push the saved `web.xml` after any pod recreation.
+- **DO** re-push the four embed files (step 4b) after any pod recreation — the chat FAB depends on them and they are ephemeral just like the `web.xml` scope.
 - **DON'T** `kubectl delete pod` as a "fix" unless you immediately re-push `web.xml` afterward — a bare delete reverts the `agents` scope and the agent will fail to load again.
 - **DON'T** push the repo template `web.xml` (`${aa.tidScope}` placeholder) — it is not resolved.
 
