@@ -1,0 +1,8 @@
+.env
+.env.local
+.env.*.local
+discovery-out/
+openapi.json
+*.pem
+__pycache__/
+.DS_Store

@@ -1,0 +1,54 @@
+[
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do I create a work order?"
+      }
+    ],
+    "expectedOutput": "Navigate to **Roadway > Progress > Day Cards**. Click **Insert** in the Work Orders grid. A dialog will appear — select your Project Type, Asset Type, Activity, and Inventory Element, clicking Next between each. Once the new row appears, fill in **Plan Quantity** and **PS Comments** (both required), then click **Save**. Your work order is now created and ready for resource assignment.",
+    "metadata": {
+      "id": "FAQ-01"
+    }
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do I make a WO?"
+      }
+    ],
+    "expectedOutput": "Navigate to **Roadway > Progress > Day Cards**. Click **Insert** in the Work Orders grid. A dialog will appear — select your Project Type, Asset Type, Activity, and Inventory Element, clicking Next between each. Once the new row appears, fill in **Plan Quantity** and **PS Comments** (both required), then click **Save**. Your work order is now created and ready for resource assignment.",
+    "metadata": {
+      "id": "FAQ-02"
+    }
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do I assign a crew to a work order?"
+      }
+    ],
+    "expectedOutput": "Select your work order in the grid, then go to the **Labor** tab below. Check the employees from the shortlist or click **Assign Crew Members** to pull in a full crew. Right-click in the labor pane and choose **Make Daycards**. Repeat for the **Equipment** and **Material** tabs as needed.",
+    "metadata": {
+      "id": "FAQ-03"
+    }
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What were the total work orders, total cost, and highest-cost activity for Oklahoma in Q1 2025?"
+      }
+    ],
+    "expectedOutput": "Here's the summary for Oklahoma, Q1 2025 (January–March):\n\n| Metric | Value |\n|---|---|\n| Total Work Orders | 1,247 |\n| Total Cost | $3,842,610 |\n| Highest-Cost Activity | Pothole Patching — $612,450 |\n| Second Highest | Snow & Ice Removal — $489,300 |\n| Third Highest | Mowing & Vegetation — $378,200 |\n\nPothole Patching alone accounted for **16%** of total Q1 spend, driven by post-winter road damage across Districts 3 and 5. To drill into specific districts or date ranges, ask me to filter further.",
+    "metadata": {
+      "id": "FAQ-04"
+    }
+  }
+]

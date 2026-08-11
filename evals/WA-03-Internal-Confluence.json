@@ -1,0 +1,52 @@
+[
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Search internal Confluence for Dnipro 3 9.3 release notes draft and summarize the key platform changes."
+      }
+    ],
+    "expectedOutput": "Use E-Tools Confluence to find the Dnipro 3 (9.3) Release Notes Draft, summarize key platform changes from that page, label the source as Internal, and include the confluence.trimble.tools URL or page title/space.",
+    "metadata": {
+      "id": "CONF-01"
+    },
+    "expectedTools": [
+      "confluence_search",
+      "confluence_get_page"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Find the PRODUCTS Confluence page for Dnipro 3 (9.3) Release Notes Draft and give me the link."
+      }
+    ],
+    "expectedOutput": "Return the Internal PRODUCTS Confluence page title and link for Dnipro 3 (9.3) Release Notes Draft. Label as Internal.",
+    "metadata": {
+      "id": "CONF-02"
+    },
+    "expectedTools": [
+      "confluence_search"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "From internal Confluence only, what mobile OS versions does AgileAssets 9.3 support?"
+      }
+    ],
+    "expectedOutput": "Answer using internal Confluence release notes only. Cite Internal source with URL. Do not invent OS versions if not present on the page.",
+    "metadata": {
+      "id": "CONF-03"
+    },
+    "expectedTools": [
+      "confluence_search",
+      "confluence_get_page"
+    ]
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "In AgileAssets, what is the difference between a work request and a work order?"
+      }
+    ],
+    "expectedOutput": "Explain the distinction using AgileAssets terms (work request vs work order), not tickets. Prefer grounding with a Public documentation URL when available.",
+    "metadata": {
+      "id": "TERM-01"
+    }
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Where in the UI do I go to enter labor on a day card?"
+      }
+    ],
+    "expectedOutput": "Describe navigating to Day Cards and the Labor area using AgileAssets terminology (day cards, not timesheets). Include a Public doc link if available.",
+    "metadata": {
+      "id": "TERM-02"
+    }
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is an admin unit in AgileAssets?"
+      }
+    ],
+    "expectedOutput": "Explain admin unit correctly (not department). Optionally cite Public documentation.",
+    "metadata": {
+      "id": "TERM-03"
+    }
+  }
+]

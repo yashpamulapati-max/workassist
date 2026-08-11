@@ -1,0 +1,52 @@
+[
+  {
+    "case": 1,
+    "outcome": "FAILED",
+    "user": "Give me AgileAssets 9.3 release notes and clearly separate public vs internal sources.",
+    "expected": "Provide release-notes content with explicit Public and Internal labels and URLs when both sources are used. Public Learning Center content should be present.",
+    "actual_preview": "The knowledge base returned older documentation (ODOT 8.0.3, Fleet 7.5.2) but not AgileAssets 9.3 release notes. Let me search the public documentation and internal sources.Good! I found internal pages. Let me retrieve the draft release notes from Confluence.Let me use the correct tool name:Perfect! I have the internal release notes. Now let me fetch the public release notes link mentioned in that page.The internal draft references a public docs link that may not be published yet. Let me provide what I found:\n\n---\n\n## AgileAssets 9.3 Release Notes \u2014 Public vs. Internal Sources\n\n### **PUBLIC (User-Facing) SOURCES**\n\n\u274c **Not yet published.** The public release notes for AgileAssets 9.3 are not",
+    "tool_names": [
+      "web_search",
+      "confluence_search",
+      "confluence_get_page",
+      "confluence_get-page",
+      "web_search"
+    ],
+    "scores": {
+      "prompt_alignment": 0.1
+    },
+    "comment": "Critical tool call violation: 5 tools used when 0 were expected, despite good content generation.",
+    "error": null
+  },
+  {
+    "case": 2,
+    "outcome": "FAILED",
+    "user": "Do not use internal Confluence. Using public docs only, what changed in AgileAssets 9.3?",
+    "expected": "Answer from public documentation only. Do not cite confluence.trimble.tools. Include a Public source URL.",
+    "actual_preview": "Let me search the public AgileAssets Learning Center directly for AgileAssets 9.3 release information.I apologize, but I was unable to find **public** documentation that lists what changed in AgileAssets 9.3. \n\nMy search of the public AgileAssets Learning Center (`docsagileassets.atlassian.net`) and `docs.agileassets.com` returned no results for version 9.3 release notes or feature announcements.\n\n**Here are your options:**\n\n1. **Check the AgileAssets Learning Center directly:** Visit https://docsagileassets.atlassian.net/wiki/spaces/aalc/overview and look for a \"Release Notes\" or \"What's New\" section.\n\n2. **Contact AgileAssets Support:** Reach out to tech support at https://agileassets.com/",
+    "tool_names": [
+      "web_search",
+      "web_search",
+      "web_search",
+      "web_search"
+    ],
+    "scores": {
+      "prompt_alignment": 0
+    },
+    "comment": "Critical tool call violation: 4 tools called, 0 expected.",
+    "error": null
+  },
+  {
+    "case": 3,
+    "outcome": "PASSED",
+    "user": "How do I create a work order?",
+    "expected": "Navigate to **Roadway > Progress > Day Cards**. Click **Insert** in the Work Orders grid. A dialog will appear \u2014 select your Project Type, Asset Type, Activity, and Inventory Element, clicking Next between each. Once the new row appears, fill in **Plan Quantity** and **PS Comments** (both required), then click **Save**. Your work order is now created and ready for resource assignment.",
+    "actual_preview": "Navigate to **Roadway > Progress > Day Cards**. Click **Insert** in the Work Orders grid. A dialog will appear \u2014 select your Project Type, Asset Type, Activity, and Inventory Element, clicking Next between each. Once the new row appears, fill in **Plan Quantity** and **PS Comments** (both required), then click **Save**. Your work order is now created and ready for resource assignment.",
+    "tool_names": [],
+    "scores": {
+      "prompt_alignment": 1
+    },
+    "comment": "Output matches expected exactly.",
+    "error": null
+  }
+]

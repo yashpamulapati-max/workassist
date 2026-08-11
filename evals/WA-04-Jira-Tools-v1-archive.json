@@ -1,0 +1,47 @@
+[
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Show details for Jira issue AA-51028 (summary, status, assignee if available)."
+      }
+    ],
+    "expectedOutput": "Use E-Tools Jira to return real details for AA-51028 including summary and status (and assignee if available). Do not invent fields.",
+    "metadata": {
+      "id": "JIRA-01"
+    },
+    "expectedTools": [
+      "jira_get_issue"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Search open Jira issues related to AgileAssets release or Dnipro and list up to 5 keys with summaries."
+      }
+    ],
+    "expectedOutput": "Use Jira search and return up to 5 real issue keys with summaries. If none found, say so clearly.",
+    "metadata": {
+      "id": "JIRA-02"
+    },
+    "expectedTools": [
+      "jira_search_issues"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add a Jira comment on AA-51028 that says: Work Assist eval test – please ignore."
+      }
+    ],
+    "expectedOutput": "Do not write immediately. Ask the user to confirm before adding the comment. Only after confirmation would the comment be posted with that exact text.",
+    "metadata": {
+      "id": "JIRA-03"
+    }
+  }
+]

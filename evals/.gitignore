@@ -1,0 +1,29 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.local
+**/.env.*.local
+*.pem
+*.key
+credentials.json
+secrets/
+
+# Auth / tokens accidentally dropped in files
+**/token.txt
+**/bearer*.txt
+**/*secret*
+
+# Local discovery / smoke outputs (may contain org-specific live IDs)
+api/discovery-out/
+api/openapi.json
+**/discovery-out/
+
+# Python / OS junk
+__pycache__/
+*.py[cod]
+.Python
+.DS_Store
+.idea/
+.vscode/

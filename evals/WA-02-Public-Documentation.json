@@ -1,0 +1,50 @@
+[
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is plan quantity on a work order in AgileAssets?"
+      }
+    ],
+    "expectedOutput": "Plan Quantity is the planned amount of work for a work order activity (units depend on the activity). Explain in AgileAssets terms, cite a Public documentation URL from docsagileassets.atlassian.net or docs.agileassets.com, and do not invent live work-order counts.",
+    "metadata": {
+      "id": "PUB-01"
+    },
+    "expectedTools": [
+      "Web Search"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do day cards work in AgileAssets?"
+      }
+    ],
+    "expectedOutput": "Provide step-oriented guidance for Day Cards using AgileAssets terminology (day cards, work orders, labor/equipment/material). Include a Public documentation URL. Do not call day cards timesheets.",
+    "metadata": {
+      "id": "PUB-02"
+    },
+    "expectedTools": [
+      "Web Search"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Summarize the user-facing AgileAssets 9.3 release notes from public documentation only."
+      }
+    ],
+    "expectedOutput": "Summarize 9.3 user-facing changes from Public AgileAssets Learning Center release notes. Label the source as Public and include the public URL. Do not use internal Confluence as the primary source.",
+    "metadata": {
+      "id": "PUB-03"
+    },
+    "expectedTools": [
+      "Web Search"
+    ]
+  }
+]

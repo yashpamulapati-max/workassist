@@ -1,0 +1,50 @@
+[
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do I create a work order?"
+      }
+    ],
+    "expectedOutput": "Navigate to **Roadway > Progress > Day Cards**. Click **Insert** in the Work Orders grid. A dialog will appear — select your Project Type, Asset Type, Activity, and Inventory Element, clicking Next between each. Once the new row appears, fill in **Plan Quantity** and **PS Comments** (both required), then click **Save**. Your work order is now created and ready for resource assignment.",
+    "metadata": {
+      "id": "SRC-01",
+      "note": "FAQ exact — prefer zero tools"
+    }
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Give me AgileAssets 9.3 release notes and clearly separate public vs internal sources."
+      }
+    ],
+    "expectedOutput": "Must use retrieval tools (Web Search and/or E-Tools Confluence). Label sections Public vs Internal with URLs when available. Public Learning Center may be unpublished — saying Public not yet available is OK if clearly labeled. Internal may cite confluence.trimble.tools draft. Do not invent release content without a source.",
+    "metadata": {
+      "id": "SRC-02"
+    },
+    "expectedTools": [
+      "web_search",
+      "confluence_search",
+      "confluence_get-page"
+    ]
+  },
+  {
+    "recordType": "CONVERSATION",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do not use internal Confluence. Using public docs only, what changed in AgileAssets 9.3?"
+      }
+    ],
+    "expectedOutput": "Use Web Search / public docs only. Do not call Confluence or cite confluence.trimble.tools. Pass if a Public source URL is given OR agent clearly states public 9.3 release notes were not found. Prefer ≤2 web searches; do not invent a feature list.",
+    "metadata": {
+      "id": "SRC-03"
+    },
+    "expectedTools": [
+      "web_search"
+    ]
+  }
+]
