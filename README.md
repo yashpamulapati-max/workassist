@@ -19,6 +19,12 @@ evaluating the assistant.
 
 Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshields-trimble)).
 
+## Tracking
+
+GitHub Project (keep in sync as we ship): [workassist](https://github.com/users/yashpamulapati-max/projects/1)
+
+Latest session notes: [2026-08-13 chat UI](./docs/session-notes/2026-08-13-chat-ui.md)
+
 ## What is Work Assist?
 
 Work Assist answers product/how-to questions and uses tools (FAQ/KB, Web Search, Confluence, Jira)

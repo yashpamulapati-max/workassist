@@ -66,7 +66,9 @@ recovery runbook.
 
 ## Open follow-ups
 
-- [ ] Finish Figma variant set + Smart-Animate wiring (needs Dev/Full seat or manual step).
-- [ ] Make `agents` scope permanent in Helm/configmap for `ams-ok-yp2`.
+- [x] Expand chat panel (docked ↔ expanded) — shipped 2026-08-13 on yp2.
+- [x] Location chip + page-aware prompts + slim header — shipped 2026-08-13.
+- [ ] Figma Collapsed (title-bar) + remember last size.
+- [ ] Make `agents` scope + embed files permanent (image/Docker) — next week.
 - [ ] Quiet the `models-api …/usage` 401/CORS console spam (non-blocking).
 - [ ] Regenerate setup-guide PDF/HTML from markdown (after conference).
