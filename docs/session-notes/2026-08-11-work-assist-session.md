@@ -67,8 +67,11 @@ recovery runbook.
 ## Open follow-ups
 
 - [x] Expand chat panel (docked ↔ expanded) — shipped 2026-08-13 on yp2.
-- [x] Location chip + page-aware prompts + slim header — shipped 2026-08-13.
-- [ ] Figma Collapsed (title-bar) + remember last size.
-- [ ] Make `agents` scope + embed files permanent (image/Docker) — next week.
+- [x] Location chip + slim header — shipped 2026-08-13. Prompt chips removed 2026-08-14.
+- [x] REST V2 wrap + `dom_get_required_fields` — shipped 2026-08-13.
+- [x] 422 `runContext` ≤ 10 + Kernel cache-bust — shipped 2026-08-13/14.
+- [x] Persist open panel + thread across `w_main.jsp` navigation — shipped 2026-08-14.
+- [ ] Figma Collapsed (title-bar). Docked vs expanded is remembered across navigation.
+- [ ] Make `agents` scope + embed files permanent (image/Docker) — week before AISummit 3.0 (Aug 26).
 - [ ] Quiet the `models-api …/usage` 401/CORS console spam (non-blocking).
 - [ ] Regenerate setup-guide PDF/HTML from markdown (after conference).

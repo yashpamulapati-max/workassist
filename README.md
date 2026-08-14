@@ -23,7 +23,8 @@ Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshie
 
 GitHub Project (keep in sync as we ship): [workassist](https://github.com/users/yashpamulapati-max/projects/1)
 
-Latest session notes: [2026-08-13 chat UI](./docs/session-notes/2026-08-13-chat-ui.md)
+Latest session notes: [2026-08-14 persist and 422](./docs/session-notes/2026-08-14-persist-and-422.md)
+([chat UI](./docs/session-notes/2026-08-13-chat-ui.md), [REST V2 wrap](./docs/session-notes/2026-08-13-rest-v2-wrap.md)).
 
 ## What is Work Assist?
 

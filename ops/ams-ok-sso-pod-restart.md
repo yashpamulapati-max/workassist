@@ -117,6 +117,14 @@ kubectl -n ams-ok-yp2 cp w_main.jsp         <NEW-POD-NAME>:$K/w_main.jsp
 kubectl exec -n ams-ok-yp2 <NEW-POD-NAME> -- touch /usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
 ```
 
+`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260814a`). After changing
+`trimble-assist.js` / `.css`, bump that version in `w_main.jsp` (and `ASSET_VER` in the JS) **and**
+re-push the JSP, then `touch web.xml` so Tomcat recompiles it. Confirm in the browser console:
+`[WorkAssist] Loaded v=…`. A hard refresh alone is not enough if the JSP still points at the old `?v=`.
+
+Window changes (`OnChangeCurrentWindow`) reload `w_main.jsp`. The embed persists open/expanded/thread
+in `sessionStorage` (`ta-panel-open`, `ta-panel-expanded`, `ta-thread-id`).
+
 ### 5. Verify the reload
 
 Check the last 20 lines for `Reloading Context with name [/ams-web] is completed`:

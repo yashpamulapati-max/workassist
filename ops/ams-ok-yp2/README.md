@@ -35,6 +35,10 @@ kubectl -n ams-ok-yp2 cp ~/agileassetsweb-project/ops/ams-ok-yp2/web.xml <POD>:/
 kubectl logs -n ams-ok-yp2 <POD> | tail -n 20   # expect: Reloading Context with name [/ams-web] is completed
 ```
 
+Also re-push Kernel embed files (`trimble-assist.js` / `.css` / `trimble-sdk.js` / `w_main.jsp`).
+`w_main.jsp` uses `?v=` cache-bust — bump it with JS changes. Window navigation reloads `w_main.jsp`;
+the panel restores from `sessionStorage` if it was open.
+
 ## Permanent fix (removes the need for this)
 
 Bake `agents` into the Helm/configmap value behind `${aa.tidScope}` for `ams-ok-yp2` so the scope
