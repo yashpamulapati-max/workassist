@@ -13,6 +13,7 @@ evaluating the assistant.
 | ---- | ------- |
 | [`evals/`](./evals) | Work Assist quality-evaluation package: Agent Studio test sets (WA-01…WA-08), Evals API discovery/smoke runner, run log, and remediation notes. Mirrored from [work-assist-evals](https://github.com/yashpamulapati-max/work-assist-evals). |
 | [`docs/`](./docs) | Integration reference ([TRIMBLE-AGENTIC-AI-SETUP](./docs/TRIMBLE-AGENTIC-AI-SETUP.md)) and [session notes](./docs/session-notes). |
+| [`embed/`](./embed) | Kernel snapshot deployed to `ams-ok-yp2` (`trimble-assist.js/css`, OK menus, SDK, `w_main.jsp`). |
 | [`ops/`](./ops) | Recovery runbook ([ams-ok-sso-pod-restart](./ops/ams-ok-sso-pod-restart.md)) and the runnable `web.xml` for `ams-ok-yp2` (keep repo private). |
 
 ## Partners
@@ -23,8 +24,10 @@ Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshie
 
 GitHub Project (keep in sync as we ship): [workassist](https://github.com/users/yashpamulapati-max/projects/1)
 
-Latest session notes: [2026-08-14 persist and 422](./docs/session-notes/2026-08-14-persist-and-422.md)
-([chat UI](./docs/session-notes/2026-08-13-chat-ui.md), [REST V2 wrap](./docs/session-notes/2026-08-13-rest-v2-wrap.md)).
+Latest session notes: [2026-08-14 Helper absorb + Jira copy + live log](./docs/session-notes/2026-08-14-helper-jira-logs.md)
+([window catalog](./docs/session-notes/2026-08-14-window-catalog.md), [persist and 422](./docs/session-notes/2026-08-14-persist-and-422.md)).
+
+Embed snapshot: [`embed/Kernel/`](./embed/Kernel/) (`v=20260814d`).
 
 ## What is Work Assist?
 

@@ -79,7 +79,7 @@ Pod `ams-ok-yp2-ams-web-assetmgm-7b75596b55-mzv6q` (not recreated). Pushed
 
 ## Open follow-ups
 
-- [ ] Phase 2: location chip includes `menu_id`; `get_window_identity`.
+- [x] Phase 2: location chip includes `menu_id`; `get_window_identity`. See `2026-08-14-helper-jira-logs.md`.
 - [ ] Live `SYSTEM_MENU` query instead of a packaged CSV.
 - [ ] Permanent `agents` + Kernel files in the image (week before AISummit 3.0).
 - [ ] Quiet `models-api …/usage` 401/CORS.

@@ -1,0 +1,399 @@
+/* ---------------------------------------------------------------
+   Work Assist – Floating chat panel (bottom-right FAB)
+   --------------------------------------------------------------- */
+
+/* FAB button – bottom right corner */
+.ta-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #0063a3;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.ta-fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,.3);
+}
+.ta-fab svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+}
+.ta-fab--close svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Floating panel – above the FAB */
+.ta-panel {
+    position: fixed;
+    bottom: 92px;
+    right: 24px;
+    width: 420px;
+    height: 600px;
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 120px);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,.25);
+    z-index: 100000;
+    display: none;
+    flex-direction: column;
+    background: #171C26;
+    transition: width .22s ease-out, height .22s ease-out;
+}
+.ta-panel--open {
+    display: flex;
+}
+/* Figma State=Expanded — larger pane, iframe stays mounted so drafts persist */
+.ta-panel--expanded {
+    width: 760px;
+    height: 860px;
+}
+
+/* Slim chrome — Trimble iframe already has a Work Assist title */
+.ta-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px 0 12px;
+    height: 36px;
+    min-height: 36px;
+    background: #0063a3;
+    color: #fff;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    gap: 8px;
+}
+.ta-panel__where {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: .95;
+}
+
+/* Helper-style window finder (parent chrome — iframe cannot typeahead) */
+.ta-panel__finder {
+    position: relative;
+    flex-shrink: 0;
+    background: #111820;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__finder-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 0;
+    outline: none;
+    background: #111820;
+    color: #E8EDF2;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    padding: 8px 12px;
+}
+.ta-panel__finder-input::placeholder {
+    color: #6b7a8d;
+}
+.ta-panel__finder-results {
+    max-height: 240px;
+    overflow-y: auto;
+    background: #171C26;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__finder-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+.ta-panel__finder-item:hover,
+.ta-panel__finder-item.is-active {
+    background: #1F2733;
+}
+.ta-panel__finder-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #E8EDF2;
+    line-height: 1.3;
+}
+.ta-panel__finder-path {
+    font-size: 11px;
+    color: #8A96A6;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+.ta-panel__finder-empty {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #6b7a8d;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.ta-panel__finder-hint {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px 8px;
+    font-size: 10px;
+    color: #6b7a8d;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__finder-hint kbd {
+    font-family: inherit;
+    font-size: 10px;
+    color: #C3CAD4;
+    background: #1F2733;
+    border: 1px solid #2C3644;
+    border-radius: 3px;
+    padding: 0 4px;
+    margin-right: 2px;
+}
+.ta-panel__prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 10px 8px;
+    background: #111820;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__prompt {
+    border: 1px solid #2C3644;
+    background: #1F2733;
+    color: #C3CAD4;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    line-height: 1.3;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    max-width: 100%;
+    text-align: left;
+}
+.ta-panel__prompt:hover {
+    background: #2A3340;
+    color: #fff;
+}
+.ta-panel__prompt--copied {
+    border-color: #48bb78;
+    color: #48bb78;
+}
+.ta-panel__hint {
+    padding: 4px 10px 8px;
+    font-size: 11px;
+    line-height: 1.35;
+    color: #8A96A6;
+    background: #111820;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__hint strong {
+    color: #E8EDF2;
+    font-weight: 600;
+}
+.ta-panel__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.ta-panel__icon-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s;
+}
+.ta-panel__icon-btn:hover {
+    background: rgba(255,255,255,.15);
+}
+.ta-panel__icon-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.ta-panel__expand { display: flex; }
+.ta-panel__restore { display: none; }
+.ta-panel--expanded .ta-panel__expand { display: none; }
+.ta-panel--expanded .ta-panel__restore { display: flex; }
+.ta-panel__close {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    transition: background .15s;
+}
+.ta-panel__icon-btn.is-ok {
+    color: #48bb78;
+}
+
+.ta-panel__log {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 28px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    background: #0d1117;
+}
+.ta-panel__log[hidden] { display: none; }
+.ta-panel__log-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px 6px 12px;
+    background: #111820;
+    color: #C3CAD4;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__log-bar span { flex: 1; min-width: 0; }
+.ta-panel__log-body {
+    flex: 1;
+    margin: 0;
+    padding: 10px 12px;
+    overflow: auto;
+    color: #d1d5db;
+    font-size: 11px;
+    line-height: 1.45;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Loading state */
+.ta-panel__loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: #7b8794;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+}
+.ta-panel__loading.ta-hidden { display: none; }
+
+.ta-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255,255,255,.1);
+    border-top-color: #0063a3;
+    border-radius: 50%;
+    animation: ta-spin .8s linear infinite;
+}
+@keyframes ta-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.ta-panel__error {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px;
+    color: #7b8794;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.5;
+}
+.ta-panel__error.ta-visible { display: flex; }
+.ta-panel__error svg {
+    width: 40px;
+    height: 40px;
+    fill: #4a5568;
+    margin-bottom: 4px;
+}
+.ta-panel__error-retry {
+    margin-top: 8px;
+    padding: 8px 20px;
+    background: #0063a3;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    font-family: inherit;
+}
+.ta-panel__error-retry:hover {
+    background: #004f82;
+}
+
+/* Iframe */
+.ta-panel__iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #171C26;
+}
+.ta-panel__iframe.ta-hidden { display: none; }
+
+/* Status bar */
+.ta-panel__status {
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #6b7a8d;
+    background: #111820;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+.ta-panel__status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #48bb78;
+    flex-shrink: 0;
+}
+.ta-panel__status-dot--error {
+    background: #f56565;
+}

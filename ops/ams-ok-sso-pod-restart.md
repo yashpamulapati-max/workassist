@@ -37,6 +37,7 @@ Push source = the repo working copy under
 | `trimble-sdk.js` | Bundled Trimble Agentic iframe SDK (`window.TrimbleAgenticSDK`) — must load first |
 | `trimble-assist.js` | Embed logic: iframe, local tools, onBeforeRun/token via SDK |
 | `trimble-assist.css` | FAB + panel styles |
+| `trimble-assist-ok-menus.json` | Oklahoma SYSTEM_MENU catalog (search_windows / open_window) |
 | `w_main.jsp` | Shell page that injects the CSS + both scripts (defer, order preserved) |
 
 Permanent fix: bundle these into the ams-web build/image so they survive recreation.
@@ -112,14 +113,15 @@ K=/usr/local/tomcat/webapps/ams-web/Kernel
 kubectl -n ams-ok-yp2 cp trimble-sdk.js     <NEW-POD-NAME>:$K/trimble-sdk.js
 kubectl -n ams-ok-yp2 cp trimble-assist.js  <NEW-POD-NAME>:$K/trimble-assist.js
 kubectl -n ams-ok-yp2 cp trimble-assist.css <NEW-POD-NAME>:$K/trimble-assist.css
+kubectl -n ams-ok-yp2 cp trimble-assist-ok-menus.json <NEW-POD-NAME>:$K/trimble-assist-ok-menus.json
 kubectl -n ams-ok-yp2 cp w_main.jsp         <NEW-POD-NAME>:$K/w_main.jsp
 # reload once so the new w_main.jsp recompiles:
 kubectl exec -n ams-ok-yp2 <NEW-POD-NAME> -- touch /usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
 ```
 
-`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260814a`). After changing
+`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260814d`). After changing
 `trimble-assist.js` / `.css`, bump that version in `w_main.jsp` (and `ASSET_VER` in the JS) **and**
-re-push the JSP, then `touch web.xml` so Tomcat recompiles it. Confirm in the browser console:
+re-push the JSP **and** `trimble-assist-ok-menus.json`, then `touch web.xml` so Tomcat recompiles it. Confirm in the browser console:
 `[WorkAssist] Loaded v=…`. A hard refresh alone is not enough if the JSP still points at the old `?v=`.
 
 Window changes (`OnChangeCurrentWindow`) reload `w_main.jsp`. The embed persists open/expanded/thread
