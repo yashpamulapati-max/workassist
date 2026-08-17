@@ -34,7 +34,7 @@
     };
 
     var CHAT_UI_URL = CHAT_UI_URLS[ENV];
-    var ASSET_VER = "20260814d";
+    var ASSET_VER = "20260817a";
 
     // w_main.jsp reloads on every window change (OnChangeCurrentWindow), which
     // destroys the panel. sessionStorage survives that same-tab navigation.
@@ -466,27 +466,99 @@
     }
 
     function parseBuildHtml(htmlText) {
-        var getValue = function (key) {
-            var m = String(htmlText || "").match(new RegExp(key + ':\\s*"([^"]*)"'));
+        var html = String(htmlText || "");
+        var byId = function (id) {
+            var m = html.match(new RegExp("id=[\"']" + id + "[\"'][^>]*>\\s*\"?([^<\"]*)"));
+            return m ? String(m[1]).replace(/^["']|["']$/g, "").trim() : "";
+        };
+        var byLabel = function (key) {
+            var m = html.match(new RegExp(key + "[\\s\\S]{0,120}?\"([^\"]*)\""));
             return m ? m[1] : "";
         };
         return {
-            number: getValue("Build number"),
-            date: getValue("Build date"),
-            branch: getValue("Branch"),
-            commit: getValue("Commit-ID"),
-            version: getValue("Version")
+            number: byId("build_number") || byLabel("Build number"),
+            date: byId("build_date") || byLabel("Build date"),
+            branch: byId("branch") || byLabel("Branch"),
+            commit: byId("commit_id") || byLabel("Commit-ID"),
+            version: byId("version") || byLabel("Version")
+        };
+    }
+
+    function stripHtmlText(html) {
+        return String(html || "")
+            .replace(/<br\s*\/?>/gi, "\n")
+            .replace(/<[^>]+>/g, "")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/\r/g, "");
+    }
+
+    function parseLoginBuild(htmlText) {
+        var html = String(htmlText || "");
+        var boxed = html.match(/id=["']build["'][^>]*>([\s\S]*?)<\/div>/i) ||
+            html.match(/<p class=["']info["'][^>]*>([\s\S]*?)<\/p>/i);
+        var line1 = "";
+        var line2 = "";
+        if (boxed) {
+            var lines = stripHtmlText(boxed[1]).split("\n")
+                .map(function (l) { return l.replace(/\s+/g, " ").trim(); })
+                .filter(Boolean);
+            if (lines[0] && /Version\s+/i.test(lines[0])) {
+                line1 = lines[0];
+                line2 = lines[1] || "";
+            }
+        }
+        if (!line1) {
+            var m1 = stripHtmlText(html).match(/Version\s+\S+\s+Build\s+[\w.]+/);
+            if (m1) line1 = m1[0];
+        }
+        if (!line2) {
+            var m2 = html.match(/[\w.]+-RELEASE\s*-\s*commit\s+\S+\s*-\s*built\s+[\d-]+\s+[\d:]+/i);
+            if (m2) line2 = m2[0].replace(/\s+/g, " ");
+        }
+        return { loginLine1: line1, loginLine2: line2 };
+    }
+
+    function emptyBuildInfo() {
+        return {
+            number: "", date: "", branch: "", commit: "", version: "",
+            loginLine1: "", loginLine2: ""
         };
     }
 
     function fetchBuildInfo() {
-        return fetch(getAppRoot() + "/build.html", { cache: "no-store", credentials: "same-origin" })
-            .then(function (r) { return r.ok ? r.text() : ""; })
-            .then(parseBuildHtml)
-            .catch(function () { return { number: "", date: "", branch: "", commit: "", version: "" }; });
+        var root = getAppRoot();
+        return Promise.all([
+            fetch(root + "/build.html", { cache: "no-store", credentials: "same-origin" })
+                .then(function (r) { return r.ok ? r.text() : ""; })
+                .catch(function () { return ""; }),
+            fetch(root + "/Kernel/w_login.jsp", { cache: "no-store", credentials: "same-origin" })
+                .then(function (r) { return r.ok ? r.text() : ""; })
+                .catch(function () { return ""; })
+        ]).then(function (parts) {
+            return mergeBuild(parseBuildHtml(parts[0]), parseLoginBuild(parts[1]));
+        }).catch(function () { return emptyBuildInfo(); });
+    }
+
+    function mergeBuild(fromHtml, fromLogin) {
+        fromHtml = fromHtml || emptyBuildInfo();
+        fromLogin = fromLogin || {};
+        return {
+            number: fromHtml.number || "",
+            date: fromHtml.date || "",
+            branch: fromHtml.branch || "",
+            commit: fromHtml.commit || "",
+            version: fromHtml.version || "",
+            loginLine1: fromLogin.loginLine1 || "",
+            loginLine2: fromLogin.loginLine2 || ""
+        };
     }
 
     function buildJiraSnippet(build) {
+        build = build || emptyBuildInfo();
         var g = window.GVars || {};
         var mid = getCurrentMenuId();
         var crumb = getBreadcrumbText();
@@ -497,15 +569,29 @@
             "User: " + (g.user_id || "") + " / " + (g.owner_name || g.owner_id || ""),
             "Env: " + (g.customer_project_id || "") + " module=" + (g.module_id || ""),
             "",
-            getAppRoot() + "/Kernel/w_login.jsp",
-            "",
-            'Build number: "' + (build.number || "") + '"',
-            'Build date: "' + (build.date || "") + '"',
-            'Branch: "' + (build.branch || "") + '"',
-            'Commit-ID: "' + (build.commit || "") + '"',
-            'Version: "' + (build.version || "") + '"'
+            getAppRoot() + "/build.html",
+            getAppRoot() + "/Kernel/w_sso_user.jsp"
         ];
+        if (build.loginLine1) lines.push(build.loginLine1);
+        if (build.loginLine2) lines.push(build.loginLine2);
+        lines.push("");
+        lines.push('Build number: "' + (build.number || "") + '"');
+        lines.push('Build date: "' + (build.date || "") + '"');
+        lines.push('Branch: "' + (build.branch || "") + '"');
+        lines.push('Commit-ID: "' + (build.commit || "") + '"');
+        lines.push('Version: "' + (build.version || "") + '"');
         return lines.join("\n");
+    }
+
+    function formatLogHtml(text) {
+        var escaped = taEsc(text || "(empty)");
+        return escaped.replace(/^.+$/gm, function (line) {
+            var cls = "";
+            if (/\bERROR\b/.test(line)) cls = "ta-log-error";
+            else if (/\bWARN(?:ING)?\b/.test(line)) cls = "ta-log-warn";
+            else if (/\bINFO\b/.test(line)) cls = "ta-log-info";
+            return cls ? '<span class="' + cls + '">' + line + "</span>" : line;
+        });
     }
 
     function fetchAmsWebLog() {
@@ -1998,10 +2084,7 @@
             '<div class="ta-panel__header">' +
                 '<div class="ta-panel__where" id="ta-where" title="Current AgileAssets window">No window open</div>' +
                 '<div class="ta-panel__header-actions">' +
-                    '<button class="ta-panel__icon-btn ta-panel__copy-jira" title="Copy window + build for Jira" aria-label="Copy bug context for Jira">' +
-                        '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
-                    '</button>' +
-                    '<button class="ta-panel__icon-btn ta-panel__view-log" title="View ams-web.log" aria-label="View live application log">' +
+                    '<button class="ta-panel__icon-btn ta-panel__view-log" title="Build info and application log" aria-label="Build info and application log">' +
                         '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>' +
                     '</button>' +
                     '<button class="ta-panel__icon-btn ta-panel__expand" title="Expand" aria-label="Expand Work Assist">' +
@@ -2031,11 +2114,16 @@
             '<iframe class="ta-panel__iframe ta-hidden" id="ta-chat-iframe" allow="clipboard-write"></iframe>' +
             '<div class="ta-panel__log" id="ta-log" hidden>' +
                 '<div class="ta-panel__log-bar">' +
-                    '<span>ams-web.log (last ~250 KB, not a file download)</span>' +
-                    '<button type="button" class="ta-panel__icon-btn" id="ta-log-refresh" title="Refresh">↻</button>' +
-                    '<button type="button" class="ta-panel__icon-btn" id="ta-log-close" title="Close log">×</button>' +
+                    '<span>Diagnostics</span>' +
+                    '<button type="button" class="ta-panel__icon-btn" id="ta-log-copy" title="Copy window + build for Jira" aria-label="Copy bug context for Jira">' +
+                        '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+                    '</button>' +
+                    '<button type="button" class="ta-panel__icon-btn" id="ta-log-refresh" title="Refresh log">↻</button>' +
+                    '<button type="button" class="ta-panel__icon-btn" id="ta-log-close" title="Close">×</button>' +
                 '</div>' +
-                '<pre class="ta-panel__log-body" id="ta-log-body">Loading…</pre>' +
+                '<div class="ta-panel__build" id="ta-log-build">Loading build info…</div>' +
+                '<div class="ta-panel__log-label">ams-web.log (last ~250 KB, not a file download)</div>' +
+                '<div class="ta-panel__log-body" id="ta-log-body">Loading…</div>' +
             '</div>' +
             '<div class="ta-panel__status">' +
                 '<span class="ta-panel__status-dot"></span>' +
@@ -2228,10 +2316,12 @@
             setOpen(false);
         });
 
-        var copyBtn = panel.querySelector(".ta-panel__copy-jira");
         var logBtn = panel.querySelector(".ta-panel__view-log");
         var logPanel = document.getElementById("ta-log");
         var logBody = document.getElementById("ta-log-body");
+        var logBuild = document.getElementById("ta-log-build");
+        var copyBtn = document.getElementById("ta-log-copy");
+        var lastBuild = emptyBuildInfo();
 
         function flashCopy(ok) {
             if (!copyBtn) return;
@@ -2243,27 +2333,60 @@
             }, 1600);
         }
 
-        if (copyBtn) {
-            copyBtn.addEventListener("click", function () {
-                loadWindowCatalog().then(fetchBuildInfo).then(function (build) {
-                    var text = buildJiraSnippet(build);
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        return navigator.clipboard.writeText(text);
-                    }
-                    var ta = document.createElement("textarea");
-                    ta.value = text;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(ta);
-                }).then(function () { flashCopy(true); }).catch(function () { flashCopy(false); });
+        function copyJiraContext() {
+            var ready = lastBuild && (lastBuild.loginLine1 || lastBuild.number || lastBuild.version)
+                ? Promise.resolve(lastBuild)
+                : fetchBuildInfo();
+            loadWindowCatalog().then(function () { return ready; }).then(function (build) {
+                lastBuild = build || lastBuild;
+                var text = buildJiraSnippet(lastBuild);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(text);
+                }
+                var ta = document.createElement("textarea");
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand("copy");
+                document.body.removeChild(ta);
+            }).then(function () { flashCopy(true); }).catch(function () { flashCopy(false); });
+        }
+
+        function renderBuildCard(build) {
+            if (!logBuild) return;
+            build = build || emptyBuildInfo();
+            lastBuild = build;
+            var line1 = build.loginLine1 || (build.version ? ("Version " + build.version) : "Application build");
+            var line2 = build.loginLine2 || "";
+            var extras = [];
+            if (build.number) extras.push("Build " + build.number);
+            if (build.date) extras.push(build.date);
+            if (build.branch) extras.push(build.branch);
+            if (build.commit) extras.push(build.commit);
+            var mid = getCurrentMenuId();
+            var crumb = getBreadcrumbText() || getLocationLabel();
+            logBuild.innerHTML =
+                '<div class="ta-panel__build-title">' + taEsc(line1) + "</div>" +
+                (line2 ? '<div class="ta-panel__build-sub">' + taEsc(line2) + "</div>" : "") +
+                (extras.length ? '<div class="ta-panel__build-meta">' + taEsc(extras.join(" · ")) + "</div>" : "") +
+                '<div class="ta-panel__build-window">' + taEsc(crumb) +
+                    (mid ? " · " + taEsc(mid) : "") + "</div>";
+        }
+
+        function loadBuildCard() {
+            if (logBuild) logBuild.textContent = "Loading build info…";
+            loadWindowCatalog().then(fetchBuildInfo).then(renderBuildCard).catch(function () {
+                renderBuildCard(emptyBuildInfo());
             });
         }
 
+        if (copyBtn) copyBtn.addEventListener("click", copyJiraContext);
+
         function showLogOverlay(text) {
             if (!logPanel || !logBody) return;
-            logBody.textContent = text || "(empty)";
+            logBody.innerHTML = formatLogHtml(text || "(empty)");
             logPanel.hidden = false;
+            try { logBody.scrollTop = logBody.scrollHeight; } catch (e) { /* ignore */ }
         }
 
         function hideLogOverlay() {
@@ -2273,6 +2396,7 @@
         function loadLiveLog() {
             if (logBody) logBody.textContent = "Loading ams-web.log…";
             if (logPanel) logPanel.hidden = false;
+            loadBuildCard();
             fetchAmsWebLog().then(function (text) {
                 taSet(TA_SHOW_LOG, null);
                 showLogOverlay(text);

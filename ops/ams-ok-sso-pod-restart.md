@@ -119,7 +119,7 @@ kubectl -n ams-ok-yp2 cp w_main.jsp         <NEW-POD-NAME>:$K/w_main.jsp
 kubectl exec -n ams-ok-yp2 <NEW-POD-NAME> -- touch /usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
 ```
 
-`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260814d`). After changing
+`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260817a`). After changing
 `trimble-assist.js` / `.css`, bump that version in `w_main.jsp` (and `ASSET_VER` in the JS) **and**
 re-push the JSP **and** `trimble-assist-ok-menus.json`, then `touch web.xml` so Tomcat recompiles it. Confirm in the browser console:
 `[WorkAssist] Loaded v=…`. A hard refresh alone is not enough if the JSP still points at the old `?v=`.
@@ -143,11 +143,66 @@ kubectl logs -n ams-ok-yp2 <NEW-POD-NAME> | tail -n 20
 - Log in via TID SSO so a **fresh token** is minted with the `agents` scope.
 - Confirm the Work Assist panel loads the agent (no "Failed to load agent").
 
+## New environment (yp2 taken down, new `ams-ok-*` URL)
+
+Same enhancements, new namespace. Do **not** blindly copy `ops/ams-ok-yp2/web.xml` if JDBC / TID client ids changed.
+
+### What carries over unchanged (do not rebuild)
+
+- Studio agent `37242c15-9716-4b91-9032-e8f7390d1d80` (stage). Instructions, Description, KB, evals stay in Studio.
+- Iframe host: `https://embed.stage.trimble-ai.com` (never `assist.stage` — `X-Frame-Options: DENY`).
+- Embed snapshot: GitHub [`embed/Kernel/`](https://github.com/yashpamulapati-max/workassist/tree/develop/embed/Kernel) or local `ams-web/src/main/webapp/Kernel/` (`v=20260817a`).
+- OK window catalog JSON (same OK menus unless the new DB is a different client).
+
+### What you must redo on the new env
+
+1. **Okta + kube**
+   ```bash
+   aws_okta_keyman -o trimble -u ypamula@am.trimblecorp.net --reup
+   aws eks update-kubeconfig --name aa-dev-eks --region us-east-2
+   kubectl get pods -n <NEW-NS>   # e.g. ams-ok-yp3
+   ```
+2. **Login URL must be TID SSO**, not classic `w_login.jsp`:
+   `https://<NEW-HOST>/ams-web/Kernel/w_sso_user.jsp`
+   Confirm the app comes up and `GVars.access_token` is a TID token.
+3. **Patch `agents` on the NEW pod’s `web.xml`** (do not set `OPENID_SCOPE` env — it duplicates the SSO filter).
+   ```bash
+   NS=<NEW-NS>
+   kubectl -n $NS get pods | grep ams-web
+   POD=<ams-web-pod-name>
+   kubectl -n $NS cp $POD:/usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml /tmp/new-web.xml
+   ```
+   In `/tmp/new-web.xml`, find the **active** `TrimbleIdentitySsoFilter` `openIdScope` and **append** ` agents` (keep the existing `OPS_…` value). Example: `OPS_prompt-patrol-env-2 agents`. Save a copy under `ops/<NEW-NS>/web.xml` so you can re-push after the next recycle.
+   ```bash
+   kubectl -n $NS cp /tmp/new-web.xml $POD:/usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
+   ```
+4. **Push the five embed files** (GitHub snapshot or local Kernel):
+   ```bash
+   SRC=~/workassist/embed/Kernel   # or ~/agileassetsweb-project/ams-web/src/main/webapp/Kernel
+   K=/usr/local/tomcat/webapps/ams-web/Kernel
+   kubectl -n $NS cp $SRC/trimble-sdk.js $POD:$K/trimble-sdk.js
+   kubectl -n $NS cp $SRC/trimble-assist.js $POD:$K/trimble-assist.js
+   kubectl -n $NS cp $SRC/trimble-assist.css $POD:$K/trimble-assist.css
+   kubectl -n $NS cp $SRC/trimble-assist-ok-menus.json $POD:$K/trimble-assist-ok-menus.json
+   kubectl -n $NS cp $SRC/w_main.jsp $POD:$K/w_main.jsp
+   kubectl -n $NS exec $POD -- touch /usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
+   kubectl -n $NS logs $POD | tail -n 20   # wait for: Reloading Context … is completed
+   ```
+   If the new image’s `w_main.jsp` differs from yp2’s, **merge** the Trimble CSS/SDK/JS tags into that JSP instead of overwriting blindly.
+5. **Hard-refresh**, SSO again (new token must include `agents`), confirm console:
+   `[WorkAssist] Loaded v=20260817a` and `window catalog=563`.
+   FAB present. Agent loads (not “Failed to load agent”). Finder present. Header is logs / expand / close (copy lives inside Diagnostics).
+
+### Optional (Cursor MCP / REST, not required for the embed)
+
+If you still use `agile-assets-api` MCP, point `AA_BASE_URL` at the new `/ams-web` and the new Oracle DSN. The in-app embed talks same-origin REST with the user’s TID token — no ngrok.
+
 ## Do / Don't
 
 - **DO** reload by `cp`/`touch` of `web.xml` — it preserves the running container and re-reads config.
 - **DO** re-push the saved `web.xml` after any pod recreation.
-- **DO** re-push the four embed files (step 4b) after any pod recreation — the chat FAB depends on them and they are ephemeral just like the `web.xml` scope.
+- **DO** re-push the five embed files (step 4b / new-env step 4) after any pod recreation — the chat FAB depends on them and they are ephemeral just like the `web.xml` scope.
+- **DO** merge Trimble script tags into the **new image’s** `w_main.jsp` if that JSP differs from yp2’s — do not blindly overwrite a newer shell.
 - **DON'T** `kubectl delete pod` as a "fix" unless you immediately re-push `web.xml` afterward — a bare delete reverts the `agents` scope and the agent will fail to load again.
 - **DON'T** push the repo template `web.xml` (`${aa.tidScope}` placeholder) — it is not resolved.
 

@@ -24,10 +24,10 @@ Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshie
 
 GitHub Project (keep in sync as we ship): [workassist](https://github.com/users/yashpamulapati-max/projects/1)
 
-Latest session notes: [2026-08-14 Helper absorb + Jira copy + live log](./docs/session-notes/2026-08-14-helper-jira-logs.md)
-([window catalog](./docs/session-notes/2026-08-14-window-catalog.md), [persist and 422](./docs/session-notes/2026-08-14-persist-and-422.md)).
+Latest session notes: [2026-08-17 Diagnostics overlay](./docs/session-notes/2026-08-17-diagnostics.md)
+([Helper absorb](./docs/session-notes/2026-08-14-helper-jira-logs.md), [window catalog](./docs/session-notes/2026-08-14-window-catalog.md)).
 
-Embed snapshot: [`embed/Kernel/`](./embed/Kernel/) (`v=20260814d`).
+Embed snapshot: [`embed/Kernel/`](./embed/Kernel/) (`v=20260817a`).
 
 ## What is Work Assist?
 

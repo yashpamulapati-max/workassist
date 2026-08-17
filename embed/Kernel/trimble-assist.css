@@ -274,6 +274,7 @@
     display: flex;
     flex-direction: column;
     background: #0d1117;
+    color: #F4F7FB;
 }
 .ta-panel__log[hidden] { display: none; }
 .ta-panel__log-bar {
@@ -282,23 +283,83 @@
     gap: 6px;
     padding: 6px 8px 6px 12px;
     background: #111820;
-    color: #C3CAD4;
+    color: #E8EDF2;
     font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 11px;
     border-bottom: 1px solid rgba(255,255,255,.06);
 }
-.ta-panel__log-bar span { flex: 1; min-width: 0; }
-.ta-panel__log-body {
+.ta-panel__log-bar span { flex: 1; min-width: 0; font-weight: 600; }
+.ta-panel__log-bar .ta-panel__icon-btn {
+    color: #F4F7FB;
+}
+.ta-panel__build {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    background: #161b22;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    color: #F4F7FB;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+}
+.ta-panel__build-title {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 13px;
+}
+.ta-panel__build-sub {
+    color: #E8EDF2;
+    margin-top: 2px;
+}
+.ta-panel__build-meta {
+    color: #C9D1D9;
+    margin-top: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    word-break: break-all;
+}
+.ta-panel__build-window {
+    color: #9BE9A8;
+    margin-top: 6px;
+    font-size: 11px;
+}
+.ta-panel__log-label {
+    flex-shrink: 0;
+    padding: 6px 12px 0;
+    color: #C9D1D9;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+}
+.ta-panel .ta-panel__log-body,
+.ta-panel div.ta-panel__log-body {
     flex: 1;
     margin: 0;
-    padding: 10px 12px;
+    padding: 8px 12px 12px;
     overflow: auto;
-    color: #d1d5db;
-    font-size: 11px;
-    line-height: 1.45;
+    background: #0d1117 !important;
+    color: #F4F7FB !important;
+    -webkit-text-fill-color: #F4F7FB !important;
+    opacity: 1 !important;
+    font-size: 12px;
+    line-height: 1.5;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 500;
     white-space: pre-wrap;
     word-break: break-word;
+}
+.ta-panel__log-body .ta-log-error {
+    color: #FF8A80 !important;
+    -webkit-text-fill-color: #FF8A80 !important;
+    font-weight: 700;
+}
+.ta-panel__log-body .ta-log-warn {
+    color: #FFD666 !important;
+    -webkit-text-fill-color: #FFD666 !important;
+    font-weight: 600;
+}
+.ta-panel__log-body .ta-log-info {
+    color: #79C0FF !important;
+    -webkit-text-fill-color: #79C0FF !important;
 }
 
 /* Loading state */

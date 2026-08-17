@@ -135,9 +135,9 @@
     <%-- Trimble Agentic AI Assist – floating chat panel --%>
     <%-- trimble-sdk.js must load first: it exposes window.TrimbleAgenticSDK
          (official iframe SDK bundle). Both use defer, which preserves order. --%>
-    <link rel="stylesheet" href="<%=fullServletContextPath%>/Kernel/trimble-assist.css?v=20260814d"/>
-    <script type="text/javascript" src="<%=fullServletContextPath%>/Kernel/trimble-sdk.js?v=20260814d" defer></script>
-    <script type="text/javascript" src="<%=fullServletContextPath%>/Kernel/trimble-assist.js?v=20260814d" defer></script>
+    <link rel="stylesheet" href="<%=fullServletContextPath%>/Kernel/trimble-assist.css?v=20260817a"/>
+    <script type="text/javascript" src="<%=fullServletContextPath%>/Kernel/trimble-sdk.js?v=20260817a" defer></script>
+    <script type="text/javascript" src="<%=fullServletContextPath%>/Kernel/trimble-assist.js?v=20260817a" defer></script>
 
     <script type="text/javascript">
         var timeout_page = "<%=timeout_page%>";
