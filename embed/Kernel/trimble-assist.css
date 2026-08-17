@@ -323,6 +323,43 @@
     margin-top: 6px;
     font-size: 11px;
 }
+.ta-panel__build-logpath {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #C9D1D9;
+}
+.ta-panel__build-openlog {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #9BE9A8;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+.ta-panel__build-openlog:hover,
+.ta-panel__build-openlog:focus {
+    color: #C3F4CC;
+    outline: none;
+}
+.ta-panel__build-here {
+    color: #8B949E;
+    margin-top: 4px;
+    font-size: 11px;
+}
+.ta-log-needswindow {
+    color: #F4F7FB !important;
+    -webkit-text-fill-color: #F4F7FB !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.55;
+    white-space: normal;
+    padding: 8px 0 4px;
+}
 .ta-panel__log-label {
     flex-shrink: 0;
     padding: 6px 12px 0;

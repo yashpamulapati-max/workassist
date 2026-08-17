@@ -119,7 +119,7 @@ kubectl -n ams-ok-yp2 cp w_main.jsp         <NEW-POD-NAME>:$K/w_main.jsp
 kubectl exec -n ams-ok-yp2 <NEW-POD-NAME> -- touch /usr/local/tomcat/webapps/ams-web/WEB-INF/web.xml
 ```
 
-`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260817a`). After changing
+`w_main.jsp` loads Kernel JS/CSS with a cache-bust query (`?v=20260817d`). After changing
 `trimble-assist.js` / `.css`, bump that version in `w_main.jsp` (and `ASSET_VER` in the JS) **and**
 re-push the JSP **and** `trimble-assist-ok-menus.json`, then `touch web.xml` so Tomcat recompiles it. Confirm in the browser console:
 `[WorkAssist] Loaded v=…`. A hard refresh alone is not enough if the JSP still points at the old `?v=`.
@@ -151,7 +151,7 @@ Same enhancements, new namespace. Do **not** blindly copy `ops/ams-ok-yp2/web.xm
 
 - Studio agent `37242c15-9716-4b91-9032-e8f7390d1d80` (stage). Instructions, Description, KB, evals stay in Studio.
 - Iframe host: `https://embed.stage.trimble-ai.com` (never `assist.stage` — `X-Frame-Options: DENY`).
-- Embed snapshot: GitHub [`embed/Kernel/`](https://github.com/yashpamulapati-max/workassist/tree/develop/embed/Kernel) or local `ams-web/src/main/webapp/Kernel/` (`v=20260817a`).
+- Embed snapshot: GitHub [`embed/Kernel/`](https://github.com/yashpamulapati-max/workassist/tree/develop/embed/Kernel) or local `ams-web/src/main/webapp/Kernel/` (`v=20260817d`).
 - OK window catalog JSON (same OK menus unless the new DB is a different client).
 
 ### What you must redo on the new env
@@ -190,7 +190,7 @@ Same enhancements, new namespace. Do **not** blindly copy `ops/ams-ok-yp2/web.xm
    ```
    If the new image’s `w_main.jsp` differs from yp2’s, **merge** the Trimble CSS/SDK/JS tags into that JSP instead of overwriting blindly.
 5. **Hard-refresh**, SSO again (new token must include `agents`), confirm console:
-   `[WorkAssist] Loaded v=20260817a` and `window catalog=563`.
+   `[WorkAssist] Loaded v=20260817d` and `window catalog=563`.
    FAB present. Agent loads (not “Failed to load agent”). Finder present. Header is logs / expand / close (copy lives inside Diagnostics).
 
 ### Optional (Cursor MCP / REST, not required for the embed)

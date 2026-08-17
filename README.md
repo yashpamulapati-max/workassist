@@ -27,7 +27,7 @@ GitHub Project (keep in sync as we ship): [workassist](https://github.com/users/
 Latest session notes: [2026-08-17 Diagnostics overlay](./docs/session-notes/2026-08-17-diagnostics.md)
 ([Helper absorb](./docs/session-notes/2026-08-14-helper-jira-logs.md), [window catalog](./docs/session-notes/2026-08-14-window-catalog.md)).
 
-Embed snapshot: [`embed/Kernel/`](./embed/Kernel/) (`v=20260817a`).
+Embed snapshot: [`embed/Kernel/`](./embed/Kernel/) (`v=20260817d`).
 
 ## What is Work Assist?
 

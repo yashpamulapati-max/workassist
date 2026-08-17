@@ -34,7 +34,7 @@
     };
 
     var CHAT_UI_URL = CHAT_UI_URLS[ENV];
-    var ASSET_VER = "20260817a";
+    var ASSET_VER = "20260817d";
 
     // w_main.jsp reloads on every window change (OnChangeCurrentWindow), which
     // destroys the panel. sessionStorage survives that same-tab navigation.
@@ -42,6 +42,7 @@
     var TA_EXPANDED = "ta-panel-expanded";
     var TA_THREAD = "ta-thread-id";
     var TA_SHOW_LOG = "ta-show-log";
+    var LOGS_MENU_ID = "system_log";
 
     function taGet(key) {
         try { return sessionStorage.getItem(key); } catch (e) { return null; }
@@ -430,6 +431,20 @@
         }
         window.location.href = base + qs;
         return { success: true, navigating: true, menu_id: menuId };
+    }
+
+    function getLogsWindowMeta() {
+        var hits = WINDOW_CATALOG.filter(function (w) { return w.id === LOGS_MENU_ID; });
+        var path = (hits[0] && hits[0].path) || "System > Tools > Logs";
+        return { id: LOGS_MENU_ID, path: path, shown: path + " · " + LOGS_MENU_ID };
+    }
+
+    function logsPathButtonHtml() {
+        var meta = getLogsWindowMeta();
+        return '<button type="button" class="ta-panel__build-openlog" data-menu-id="' +
+            taEsc(meta.id) +
+            '" title="Open System Logs. ⌘/Ctrl-click opens a new session so this chat stays on the current window.">' +
+            taEsc(meta.shown) + "</button>";
     }
 
     function getBreadcrumbText() {
@@ -2365,12 +2380,15 @@
             if (build.commit) extras.push(build.commit);
             var mid = getCurrentMenuId();
             var crumb = getBreadcrumbText() || getLocationLabel();
+            var here = crumb + (mid ? " · " + mid : "");
             logBuild.innerHTML =
                 '<div class="ta-panel__build-title">' + taEsc(line1) + "</div>" +
                 (line2 ? '<div class="ta-panel__build-sub">' + taEsc(line2) + "</div>" : "") +
                 (extras.length ? '<div class="ta-panel__build-meta">' + taEsc(extras.join(" · ")) + "</div>" : "") +
-                '<div class="ta-panel__build-window">' + taEsc(crumb) +
-                    (mid ? " · " + taEsc(mid) : "") + "</div>";
+                '<div class="ta-panel__build-logpath">Live log window: ' + logsPathButtonHtml() + "</div>" +
+                (mid && mid !== LOGS_MENU_ID
+                    ? '<div class="ta-panel__build-here">This window: ' + taEsc(here) + "</div>"
+                    : "");
         }
 
         function loadBuildCard() {
@@ -2380,7 +2398,26 @@
             });
         }
 
+        function openLogsWindow(e) {
+            var newTab = !!(e && (e.metaKey || e.ctrlKey));
+            if (!newTab) {
+                taSet(TA_OPEN, "1");
+                taSet(TA_SHOW_LOG, "1");
+            }
+            loadWindowCatalog().then(function () {
+                navigateToMenuId(LOGS_MENU_ID, newTab);
+            });
+        }
+
         if (copyBtn) copyBtn.addEventListener("click", copyJiraContext);
+        if (logPanel) {
+            logPanel.addEventListener("click", function (e) {
+                var btn = e.target.closest ? e.target.closest(".ta-panel__build-openlog") : null;
+                if (!btn) return;
+                e.preventDefault();
+                openLogsWindow(e);
+            });
+        }
 
         function showLogOverlay(text) {
             if (!logPanel || !logBody) return;
@@ -2393,6 +2430,13 @@
             if (logPanel) logPanel.hidden = true;
         }
 
+        function showLogNeedsWindow() {
+            if (!logBody) return;
+            logBody.innerHTML =
+                '<div class="ta-log-needswindow">Live <code>ams-web.log</code> loads after you open System Logs. ' +
+                "Click " + logsPathButtonHtml() + " (chat comes back after that window opens).</div>";
+        }
+
         function loadLiveLog() {
             if (logBody) logBody.textContent = "Loading ams-web.log…";
             if (logPanel) logPanel.hidden = false;
@@ -2402,11 +2446,8 @@
                 showLogOverlay(text);
             }).catch(function (err) {
                 if (String(err && err.message) === "not-on-logs") {
-                    taSet(TA_SHOW_LOG, "1");
-                    if (logBody) {
-                        logBody.textContent = "Opening System > Tools > Logs, then loading the tail of ams-web.log in this panel (no file download)…";
-                    }
-                    navigateToMenuId("system_log");
+                    taSet(TA_SHOW_LOG, null);
+                    showLogNeedsWindow();
                     return;
                 }
                 showLogOverlay("Could not load log: " + (err && err.message ? err.message : err));
