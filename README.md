@@ -11,6 +11,7 @@ evaluating the assistant.
 
 | Path | Purpose |
 | ---- | ------- |
+| [`packaging/`](./packaging) | **Standalone** product pack: how any AgileAssets application can add WorkAssist Agent. Independent of the yp2 demo. |
 | [`evals/`](./evals) | Work Assist quality-evaluation package: Agent Studio test sets (WA-01…WA-08), Evals API discovery/smoke runner, run log, and remediation notes. Mirrored from [work-assist-evals](https://github.com/yashpamulapati-max/work-assist-evals). |
 | [`docs/`](./docs) | Integration reference ([TRIMBLE-AGENTIC-AI-SETUP](./docs/TRIMBLE-AGENTIC-AI-SETUP.md)) and [session notes](./docs/session-notes). |
 | [`embed/`](./embed) | Kernel snapshot deployed to `ams-ok-yp2` (`trimble-assist.js/css`, OK menus, SDK, `w_main.jsp`). |
@@ -24,8 +25,12 @@ Partnered with **Yasmina Shields** ([@yshields-trimble](https://github.com/yshie
 
 GitHub Project (keep in sync as we ship): [workassist](https://github.com/users/yashpamulapati-max/projects/1)
 
-Latest session notes: [2026-08-17 Diagnostics overlay](./docs/session-notes/2026-08-17-diagnostics.md)
-([Helper absorb](./docs/session-notes/2026-08-14-helper-jira-logs.md), [window catalog](./docs/session-notes/2026-08-14-window-catalog.md)).
+Latest session notes: [2026-08-21 packaging](./docs/session-notes/2026-08-21-packaging.md)
+([Diagnostics](./docs/session-notes/2026-08-17-diagnostics.md),
+[Helper absorb](./docs/session-notes/2026-08-14-helper-jira-logs.md),
+[window catalog](./docs/session-notes/2026-08-14-window-catalog.md)).
+
+Productization: [`packaging/`](./packaging/) — [Packaging WorkAssist Agent for AgileAssets Application](./packaging/README.md).
 
 Embed snapshot: [`embed/Kernel/`](./embed/Kernel/) (`v=20260817d`).
 
